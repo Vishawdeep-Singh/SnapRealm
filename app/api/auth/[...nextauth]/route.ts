@@ -3,8 +3,12 @@ import bcrypt from "bcrypt";
 import GoogleProvider from "next-auth/providers/google";
 import { NextAuthOptions, User } from "next-auth";
 import { JWT } from "next-auth/jwt";
-import jwt from "jsonwebtoken";
-import { Credentials } from "../types/types";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
+
+// import jwt from "jsonwebtoken";
+// import { Credentials } from "../types/types";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -30,9 +34,9 @@ export const authOptions: NextAuthOptions = {
         }
         console.log(credentials);
 
-        const existingUser = await db.user.findFirst({
+        const existingUser = await prisma.user.findUnique({
           where: {
-            email: credentials?.email,
+            email: credentials.email,
           },
         });
 
