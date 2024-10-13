@@ -4,10 +4,13 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { redirect } from "next/navigation";
+import { signIn } from "next-auth/react";
 
 export default function SignupFormDemo(formdata: FormData) {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    signIn("credentials");
     console.log(formdata);
     redirect("/");
   };

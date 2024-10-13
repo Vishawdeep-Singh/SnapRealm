@@ -1,14 +1,12 @@
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
+import { toast } from "sonner";
 import GoogleProvider from "next-auth/providers/google";
-import { NextAuthOptions, User } from "next-auth";
+import { NextAuthOptions } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
-
-// import jwt from "jsonwebtoken";
-// import { Credentials } from "../types/types";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -27,56 +25,24 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials: any) {
-        console.log(credentials);
-        // Check if the credentials exist
-        if (!credentials || !credentials.phone || !credentials.password) {
-          return null;
-        }
-        console.log(credentials);
-
-        const existingUser = await prisma.user.findUnique({
+        //get user like credientials.indentifier etc and compareit with the db
+        const user = await prisma.user.findUnique({
           where: {
-            email: credentials.email,
+            email: credentials?.email,
           },
         });
-
-        if (existingUser) {
-          console.log(existingUser.email);
-          // Compare the provided password with the stored hashed password
-          const passwordValidation = await bcrypt.compare(
-            credentials.password,
-            existingUser.password as string
-          );
-          if (passwordValidation) {
-            return {
-              id: existingUser.id.toString(),
-              name: existingUser.name,
-              email: existingUser.email,
-              number: existingUser.cellPh,
-            };
-          }
+        if (user) {
+          return user;
         }
-
         return null;
       },
     }),
   ],
-  //   cookies: {
-  //     sessionToken: {
-  //       name: 'next-auth.session-token-user-app',
-  //       options: {
-  //         path: '/',
-  //         httpOnly: true,
-  //         sameSite: 'lax',
-  //         secure: process.env.NODE_ENV==="production",
-  //       },
-  //     },
-  //   },
 
   secret: process.env.JWT_SECRET || "secret",
 
   callbacks: {
-    async jwt({ token, user, account, profile, isNewUser }) {
+    async jwt({ token, user, account, profile }) {
       if (account?.provider === "google") {
         const googleuser = await prisma.user.findUnique({
           where: {
@@ -87,27 +53,19 @@ export const authOptions: NextAuthOptions = {
           },
         });
 
-        console.log(user);
-        console.log(profile);
         token.provider = "google";
         token.sub = googleuser?.id.toString();
         token.email = profile?.email;
         token.name = profile?.name;
         token.picture = user?.image as string;
-        token.role = "ADMIN";
-        console.log(token);
         return token;
       } else if (user) {
         token.provider = "credentials";
         token.sub = user.id;
         token.name = user.name;
         token.email = user.email;
-        token.number = user.number;
-        token.role = "ADMIN";
-        console.log(token);
         return token;
       }
-
       return token;
     },
     async session({ session, token, user }) {
@@ -177,7 +135,7 @@ export const authOptions: NextAuthOptions = {
   },
 
   pages: {
-    signIn: "/signin",
+    signIn: "/signup",
     error: "/error",
   },
 };
