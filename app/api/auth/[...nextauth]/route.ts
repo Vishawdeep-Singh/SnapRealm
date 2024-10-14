@@ -3,10 +3,7 @@ import bcrypt from "bcrypt";
 import { toast } from "sonner";
 import GoogleProvider from "next-auth/providers/google";
 import { NextAuthOptions } from "next-auth";
-import { JWT } from "next-auth/jwt";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { db } from "@/lib/db";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -17,22 +14,30 @@ export const authOptions: NextAuthOptions = {
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: {
-          label: "Email Address",
-          type: "email",
-          placeholder: "example@example.com",
-        },
+        username: { label: "Username", type: "text" },
+        email: { label: "email", type: "email" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials: any) {
-        //get user like credientials.indentifier etc and compareit with the db
-        const user = await prisma.user.findUnique({
+        console.log("Credentials received:", credentials);
+        const user = await db.user.findFirst({
           where: {
             email: credentials?.email,
           },
         });
+
         if (user) {
-          return user;
+          const passwordValidation = await bcrypt.compare(
+            credentials.password,
+            user.password as string
+          );
+          if (passwordValidation) {
+            return {
+              ...user,
+              password: user.password ?? undefined, // Convert null to undefined
+            };
+          }
+          return null;
         }
         return null;
       },
@@ -43,8 +48,13 @@ export const authOptions: NextAuthOptions = {
 
   callbacks: {
     async jwt({ token, user, account, profile }) {
+      console.log("Token", token);
+      console.log("user", user);
+      console.log("account", account);
+      console.log("profile", profile);
+
       if (account?.provider === "google") {
-        const googleuser = await prisma.user.findUnique({
+        const googleuser = await db.user.findUnique({
           where: {
             email: profile?.email,
           },
@@ -52,52 +62,57 @@ export const authOptions: NextAuthOptions = {
             id: true,
           },
         });
-
         token.provider = "google";
-        token.sub = googleuser?.id.toString();
+        token._id = googleuser?.id.toString();
         token.email = profile?.email;
-        token.name = profile?.name;
+        token.username = profile?.name;
         token.picture = user?.image as string;
         return token;
       } else if (user) {
         token.provider = "credentials";
-        token.sub = user.id;
-        token.name = user.name;
+        token._id = user.id;
+        token.username = user.username;
         token.email = user.email;
         return token;
       }
       return token;
     },
     async session({ session, token, user }) {
-      console.log(token);
+      console.log("Token", token);
+      console.log("session", session);
+      console.log("User", user);
 
       if (token.provider === "google") {
         session.user = {
-          id: token.sub as string,
-          name: token.name as string,
+          _id: token._id as string,
+          username: token.username as string,
           email: token.email as string,
           provider: token.provider,
-          role: token.role as string,
           image: token.picture,
         };
         return session;
       } else {
         session.user = {
-          id: token.sub as string,
-          name: token.name as string,
+          _id: token._id as string,
+          username: token.username as string,
           email: token.email as string,
           provider: token.provider as string,
-          role: token.role as string,
-          number: token.number as string,
         };
         console.log(session);
         return session;
       }
+      return session;
     },
     async signIn({ user, account, profile, email, credentials }) {
+      console.log("user", user);
+      console.log("account", account);
+      console.log("profile", profile);
+      console.log("email", email);
+      console.log("credentials", credentials);
+
       try {
         if (account?.provider === "google") {
-          const user = await prisma.user.findUnique({
+          const user = await db.user.findUnique({
             where: {
               email: profile?.email,
             },
@@ -106,20 +121,13 @@ export const authOptions: NextAuthOptions = {
             toast.error("Email is Already in use", {
               closeButton: true,
             });
-            console.log("gdfadsfasdfads");
             return false;
           }
           if (!user) {
-            const newuser = await prisma.user.create({
+            const newuser = await db.user.create({
               data: {
                 email: profile?.email as string,
-                name: profile?.name as string,
-                cellPh: "",
-                roles: {
-                  create: {
-                    roleName: "ADMIN",
-                  },
-                },
+                username: profile?.name as string,
                 provider: "google",
               },
             });
@@ -135,7 +143,7 @@ export const authOptions: NextAuthOptions = {
   },
 
   pages: {
-    signIn: "/signup",
-    error: "/error",
+    signIn: "/signin",
+    signOut: "/signout",
   },
 };

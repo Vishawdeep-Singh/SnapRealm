@@ -1,9 +1,9 @@
-import SignupForm from "@/components/form/signup-form-demo";
+import SigninForm from "@/components/form/signin-form";
 
 export default function SingupPage() {
   return (
-    <main>
-      <SigupForm />
+    <main className="w-full">
+      <SigninForm />
     </main>
   );
 }
