@@ -18,18 +18,63 @@ model Post {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   title     String   @db.VarChar(255)
-  content   String?
-  published Boolean  @default(false)
-  author    User     @relation(fields: [authorId], references: [id])
+  description String? @db.VarChar(1000)
+  media   String[]
+  
+  //creator
+  author    User     @relation(fields: [authorId], references: [id])    //make realtion betweeen authorid and user.id 
   authorId  Int
+
+  //post comment
+  comments   Comment[] 
+  
+  //post saved by user
+  savers     User[]   @relation("SavedPosts")
 }
 
 model User {
   id          Int      @id @default(autoincrement())
   email       String   @unique
-  username    String   @unique
+  username    String?  @unique
   password    String?
+  image       String?
   provider    String 
   createdAt   DateTime @default(now())
-  posts       Post[]
+
+  //user posts
+  posts       Post[]  
+  
+  //user followers list
+  followedBy  Follows[] @relation("followedBy")
+  following   Follows[] @relation("following")
+
+  //user comments
+  comments   Comment[]  @relation("UserComments")
+
+  //saved post realted to name SavedPosts to a user
+  savedPosts Post[]     @relation("SavedPosts")	
+}
+
+model Follows {
+
+  //the person who is following.
+  followedBy   User @relation("followedBy", fields: [followedById], references: [id])
+  followedById Int
+
+  //person i am following who is being followed by another user(us)
+  following    User @relation("following", fields: [followingId], references: [id])
+  followingId  Int
+
+  @@id([followingId, followedById])
+}
+
+
+
+model Comment {
+  id      String   @id @default(uuid())
+  content String
+  post    Post     @relation(fields: [postId], references: [id])
+  postId  Int
+  author  User     @relation(fields: [authorId], references: [id], name: "UserComments")
+  authorId Int
 }

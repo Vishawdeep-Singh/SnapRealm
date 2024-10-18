@@ -10,6 +10,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 const schema = z.object({
@@ -41,22 +42,27 @@ export default function SignupForm() {
       password: data.password,
       provider: "credentials",
     };
-    const res = await fetch("/api/user", {
+    const res = await fetch("/api/newpost", {
       method: "POST",
       headers: {
-        "Content-Type": "Aplication/json",
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(user),
     });
 
     if (res.ok) {
+      const response = await signIn("credentials", {
+        email: user.email,
+        passoword: user.password,
+        redirect: false,
+        callbackUrl: "/",
+      });
       router.push("/");
     } else {
-      console.log(res);
       toast.error("Registration failed!", {
         closeButton: true,
       });
-      console.log("Registration failed");
+      // console.log("Registration failed");
     }
   };
 
@@ -121,7 +127,7 @@ export default function SignupForm() {
           <Label htmlFor="password">Password</Label>
           <Input
             id="password"
-            placeholder="••••••••"
+            placeholder="••••••••••••"
             {...register("password")}
           />
           {errors.password && (
@@ -141,6 +147,13 @@ export default function SignupForm() {
 
         <div className="flex flex-col space-y-4">
           <button
+            onClick={async () => {
+              await signIn("google", {
+                redirect: false,
+                callbackUrl: "/",
+              });
+              router.push("/");
+            }}
             className=" relative group/btn flex space-x-2 items-center justify-center px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50 dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
             type="button"
           >

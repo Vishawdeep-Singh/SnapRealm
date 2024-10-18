@@ -5,6 +5,7 @@ import { DefaultSession, DefaultUser } from "next-auth";
 declare module "next-auth" {
   interface User extends DefaultUser {
     id?: number;
+    image?: string;
     username?: string;
     email?: string;
     password?: string;
@@ -13,10 +14,14 @@ declare module "next-auth" {
 
   interface Session {
     user?: {
-      _id?: string;
+      id?: string;
+      image?: string;
       username?: string;
       email?: string;
       provider?: string;
     } & DefaultSession["user"];
+  }
+  interface Profile {
+    picture?: string;
   }
 }

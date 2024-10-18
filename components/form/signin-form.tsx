@@ -33,14 +33,16 @@ export default function SigninForm() {
   });
 
   const onSubmit = async (data: FormData) => {
+    // console.log(data);
     const response = await signIn("credentials", {
       email: data.email,
       password: data.password,
       redirect: false,
-      callbackUrl: "/dashboard",
+      callbackUrl: "/",
     });
+    // console.log(response);
     if (response?.ok) {
-      router.push("/dashboard");
+      router.push("/");
     }
     if (response?.error) {
       toast.error("Password is wrong", {
@@ -108,6 +110,13 @@ export default function SigninForm() {
 
         <div className="flex flex-col space-y-4">
           <button
+            onClick={async () => {
+              await signIn("google", {
+                redirect: false,
+                callbackUrl: "/",
+              });
+              router.push("/");
+            }}
             className=" relative group/btn flex space-x-2 items-center justify-center px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50 dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
             type="button"
           >

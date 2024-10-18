@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { hash } from "bcrypt";
+import bcrypt from "bcrypt";
 import { NextResponse } from "next/server";
 import * as z from "zod";
 
@@ -21,21 +21,18 @@ export async function POST(req: Request) {
     const existingUserEmail = await db.user.findUnique({
       where: { email: email },
     });
-
     if (existingUserEmail) {
       return NextResponse.json(
         { user: null, message: "User with this email already exits" },
         { status: 409 }
       );
     }
-
     //for username
     const existingUsername = await db.user.findUnique({
       where: {
         username: username as string,
       },
     });
-
     if (existingUsername) {
       return NextResponse.json(
         { user: null, message: "User with this username already exits" },
@@ -43,7 +40,9 @@ export async function POST(req: Request) {
       );
     }
 
-    const hashedPassword = await hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 12);
+
+    // console.log("hashedpassword", hashedPassword);
 
     const newUser = await db.user.create({
       data: {
@@ -53,7 +52,6 @@ export async function POST(req: Request) {
         password: hashedPassword,
       },
     });
-
     const { password: newUserPassword, ...rest } = newUser;
 
     return NextResponse.json(
@@ -65,7 +63,7 @@ export async function POST(req: Request) {
     );
   } catch (err) {
     return NextResponse.json(
-      { message: "Somthing went Wrong!!" },
+      { message: "Something went Wrong!!" },
       { status: 500 }
     );
   }
