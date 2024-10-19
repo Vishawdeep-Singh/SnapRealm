@@ -1,18 +1,9 @@
 "use client";
 
 import { useFormStatus } from "react-dom";
-import { Loader } from "rsuite";
 
 export default function NewPostSubmitButton() {
   const status = useFormStatus();
-
-  if (status.pending) {
-    return (
-      <p>
-        <Loader size="lg" /> Loading...
-      </p>
-    );
-  }
 
   return (
     <>
@@ -23,10 +14,10 @@ export default function NewPostSubmitButton() {
         Cancel
       </button>
 
-      <button className="p-[3px] relative">
+      <button disabled={status.pending} className="p-[3px] relative">
         <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg" />
         <div className="px-8 py-2  bg-black rounded-[6px]  relative group transition duration-200 text-white hover:bg-transparent">
-          Post
+          {status.pending ? "Posting....." : "Post"}
         </div>
       </button>
     </>

@@ -4,7 +4,9 @@ import { getServerSession } from "next-auth";
 import { Suspense } from "react";
 import { Loader } from "rsuite";
 import Stories from "@/components/Stories";
-import AllPost from "@/components/AllPost";
+import AllPost from "@/components/Post/AllPost";
+import AllUsers from "@/components/AllUsers";
+import { Dashboard } from "@/components/HomeSidebar";
 
 export default async function HomePage() {
   const session = await getServerSession(authOptions);
@@ -13,12 +15,17 @@ export default async function HomePage() {
   }
 
   return (
-    <div className="text-white w-full dark overflow-y-auto">
-      <Suspense fallback={<Loader size="sm" content="Small" />}>
-        <Stories stories={[]} />
-        <main className="text-white dark flex justify-center items-center h-screen">
+    <div className="text-white w-full dark overflow-y-auto flex flex-wrap space-y-7">
+      <Suspense fallback={<Dashboard />}>
+        <div className="w-full">
+          <Stories stories={[]} />
+        </div>
+        <div className="text-white flex-grow dark flex justify-center items-center h-screen">
           <AllPost />
-        </main>
+        </div>
+        <div className="w-[30%]">
+          <AllUsers />
+        </div>
       </Suspense>
     </div>
   );

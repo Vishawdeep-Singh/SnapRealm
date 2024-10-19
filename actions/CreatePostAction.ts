@@ -15,20 +15,18 @@ export async function CreatePost(formData: FormData) {
 
   const mediaUrls = await uploadImages(media);
 
-  try {
-    const newpost = await db.post.create({
-      data: {
-        media: mediaUrls,
-        title: title as string,
-        description: description as string,
-        authorId: parseInt(session?.user?.id as string),
-      },
-    });
-
-    // console.log(newpost);
-    revalidatePath("/", "layout");
-  } catch (err) {
-    console.log(err);
+  const newpost = await db.post.create({
+    data: {
+      media: mediaUrls,
+      title: title as string,
+      description: description as string,
+      authorId: parseInt(session?.user?.id as string),
+    },
+  });
+  if (newpost) {
+    revalidatePath("/");
+    redirect("/");
+  } else {
+    console.error("There is an error");
   }
-  redirect("/");
 }
