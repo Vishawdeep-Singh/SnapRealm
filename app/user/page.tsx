@@ -2,6 +2,7 @@ import React from "react";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/options";
 import { redirect } from "next/navigation";
+import { CardCarousal } from "@/components/CardCarousal";
 
 export default async function UserPage() {
   const session = await getServerSession(authOptions);
@@ -10,5 +11,10 @@ export default async function UserPage() {
     redirect("/");
   }
 
-  return <main className="flex justify-center items-center">soemthign</main>;
+  return (
+    <main className="flex justify-center items-center h-full w-full">
+      {/* <main className="w-screen"> */}
+      <CardCarousal />
+    </main>
+  );
 }

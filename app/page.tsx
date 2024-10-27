@@ -2,7 +2,6 @@ import { redirect } from "next/navigation";
 import { authOptions } from "./api/auth/[...nextauth]/options";
 import { getServerSession } from "next-auth";
 import { Suspense } from "react";
-import { Loader } from "rsuite";
 import Stories from "@/components/Stories";
 import AllPost from "@/components/Post/AllPost";
 import AllUsers from "@/components/AllUsers";

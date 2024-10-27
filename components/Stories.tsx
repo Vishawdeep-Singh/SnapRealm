@@ -5,7 +5,7 @@ export default function Stories({ stories }: { stories: string[] }) {
   return (
     <header>
       {stories.map((story) => (
-        <div className="rounded-full border-4 w-5 h-5"></div>
+        <div key={story} className="rounded-full border-4 w-5 h-5"></div>
       ))}
     </header>
   );

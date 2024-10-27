@@ -42,7 +42,7 @@ export default function SignupForm() {
       password: data.password,
       provider: "credentials",
     };
-    const res = await fetch("/api/newpost", {
+    const res = await fetch("/api/user", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -53,10 +53,11 @@ export default function SignupForm() {
     if (res.ok) {
       const response = await signIn("credentials", {
         email: user.email,
-        passoword: user.password,
+        password: user.password,
         redirect: false,
         callbackUrl: "/",
       });
+      console.log(response);
       router.push("/");
     } else {
       toast.error("Registration failed!", {

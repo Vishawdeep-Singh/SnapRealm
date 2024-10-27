@@ -1,14 +1,12 @@
 import { db } from "@/lib/db";
 import { PostImages } from "../PostImages";
 import { Loader } from "rsuite";
-import {
-  IconBookmark,
-  IconHeart,
-  IconMessageCircle,
-  IconSend,
-} from "@tabler/icons-react";
+import { IconBookmark } from "@tabler/icons-react";
 import { PostDropDown } from "./PostDropDown";
 import Link from "next/link";
+import LikeButton from "../LikeButton";
+import CommentButton from "../CommentButton";
+import { PostShare } from "./PostShare";
 
 export default async function AllPost() {
   const allPosts = await db.post.findMany({
@@ -19,6 +17,7 @@ export default async function AllPost() {
           username: true,
         },
       },
+      likedby: true,
     },
   });
 
@@ -42,39 +41,37 @@ export default async function AllPost() {
                   <PostImages images={post.media} />
                 </div>
                 <div className="flex items-center gap-2">
+                  <div>
+                    <LikeButton postId={post.id} />
+                  </div>
+                  <div>
+                    <CommentButton postid={post.id} />
+                  </div>
                   <button className="focus:outline-none">
-                    <IconHeart />
-                  </button>
-                  <button className="focus:outline-none">
-                    <IconMessageCircle />
-                  </button>
-                  <button className="focus:outline-none">
-                    <IconSend />
+                    <PostShare postid={post.id} />
                   </button>
                   <button className="focus:outline-none ml-auto">
                     <IconBookmark />
                   </button>
                 </div>
                 <p className="text-sm text-gray-500">
-                  Liked by
-                  <strong className="font-medium text-gray-600">
-                    user
-                  </strong>{" "}
-                  and
-                  <strong className="font-medium text-gray-600">others</strong>
+                  <em>
+                    Posted on{" "}
+                    {new Date(post.createdAt).toLocaleDateString("en-GB")}
+                  </em>
                 </p>
                 <div className="flex items-center gap-2">
                   <strong className="font-medium text-gray-600">user</strong>
                   <p className="text-sm text-gray-500">Great post!</p>
                 </div>
-                <p className="text-xs absolute top-[-25] w-full pl-5 pr-9 flex justify-between text-gray-400 z-10">
+                <div className="text-xs absolute top-[-25] w-full pl-5 pr-9 flex justify-between text-gray-400 z-10">
                   <h1 className="flex justify-center items-center h-9">
                     <Link href={`/${post.author.username}`}>
                       {post.author.username}
                     </Link>
                   </h1>
                   <PostDropDown author={post.author.id} />
-                </p>
+                </div>
               </div>
             </main>
           </div>

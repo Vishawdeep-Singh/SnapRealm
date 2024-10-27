@@ -18,7 +18,7 @@ import { cn } from "@/lib/utils";
 import { signOut, useSession } from "next-auth/react";
 
 export function HomeSidebar({ children }: { children: React.ReactNode }) {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
 
   const links = [
     {
@@ -99,11 +99,15 @@ export function HomeSidebar({ children }: { children: React.ReactNode }) {
                 href: "/user",
                 icon: (
                   <Image
-                    src="./defaultuser.svg"
-                    className="h-7 w-7 flex-shrink-0 rounded-full"
-                    width={50}
-                    height={50}
-                    alt="Avatar"
+                    className="rounded-sm"
+                    src={
+                      session?.user?.image
+                        ? session.user.image
+                        : "./defaultuser.svg"
+                    }
+                    alt="user image"
+                    height={20}
+                    width={35}
                   />
                 ),
               }}

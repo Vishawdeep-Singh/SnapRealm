@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "sonner";
 import { Providers } from "@/provider";
 import { HomeSidebar } from "@/components/HomeSidebar";
+import ConditionalWrapper from "@/components/ConditionalWrapper";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -32,7 +33,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased dark text-white`}
       >
         <Providers>
-          <HomeSidebar>{children}</HomeSidebar>
+          <ConditionalWrapper>{children}</ConditionalWrapper>
         </Providers>
         <Toaster />
       </body>
