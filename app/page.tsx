@@ -1,10 +1,11 @@
+import React from "react";
 import { redirect } from "next/navigation";
 import { authOptions } from "./api/auth/[...nextauth]/options";
 import { getServerSession } from "next-auth";
 import { Suspense } from "react";
 import Stories from "@/components/Stories";
 import AllPost from "@/components/Post/AllPost";
-import AllUsers from "@/components/AllUsers";
+import AllUsers from "@/components/User/AllUsers";
 import { Dashboard } from "@/components/HomeSidebar";
 
 export default async function HomePage() {
@@ -22,7 +23,8 @@ export default async function HomePage() {
         <div className="text-white flex-grow dark flex justify-center items-center h-screen">
           <AllPost />
         </div>
-        <div className="w-[30%]">
+        <div className="w-[30%] md:flex md:flex-col md:space-y-5 hidden">
+          <h1>You might know..</h1>
           <AllUsers />
         </div>
       </Suspense>

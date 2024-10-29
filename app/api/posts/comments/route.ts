@@ -62,16 +62,15 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    if (comments) {
-      if (comments.length === 0) {
-        return NextResponse.json({ comments: [] }, { status: 200 });
-      }
-      return NextResponse.json({ comments: comments }, { status: 200 });
-    } else {
-      throw new Error("Error getting the comments");
+    if (comments.length === 0) {
+      return NextResponse.json({ comments: [] }, { status: 200 });
     }
+    return NextResponse.json({ comments: comments }, { status: 200 });
   } catch (err) {
     console.log("Error", err);
-    return NextResponse.json({ message: err }, { status: 500 });
+    return NextResponse.json(
+      { message: "Not able  to get comments at the moment" },
+      { status: 500 }
+    );
   }
 }

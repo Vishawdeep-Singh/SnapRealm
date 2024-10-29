@@ -5,6 +5,9 @@ export async function PUT(req: NextRequest) {
   // Changed to POST
   const userId = req.nextUrl.searchParams.get("userId");
   const postId = req.nextUrl.searchParams.get("postId");
+  const isAlreadySaved = req.nextUrl.searchParams.get(
+    "isAlreadySaved"
+  ) as string;
 
   if (!userId || !postId) {
     return NextResponse.json(
@@ -14,38 +17,23 @@ export async function PUT(req: NextRequest) {
   }
 
   try {
-    // Check if the post is already saved by the user
-    const user = await db.user.findUnique({
-      where: { id: parseInt(userId) },
-      select: {
-        savedPosts: {
-          where: { id: parseInt(postId) },
-        },
-      },
-    });
-
-    let isAlreadySaved;
-
-    if (user?.savedPosts) {
-      isAlreadySaved = user?.savedPosts.length > 0;
-    }
-
     const updatedUser = await db.user.update({
       where: { id: parseInt(userId) },
       data: {
-        savedPosts: isAlreadySaved
-          ? {
-              disconnect: { id: parseInt(postId) }, // If saved, remove
-            }
-          : {
-              connect: { id: parseInt(postId) }, // If not saved, add
-            },
+        savedPosts:
+          isAlreadySaved === "true"
+            ? {
+                disconnect: { id: parseInt(postId) }, // If saved, remove
+              }
+            : {
+                connect: { id: parseInt(postId) }, // If not saved, add
+              },
       },
     });
 
     return NextResponse.json(
       {
-        SavedPost: isAlreadySaved ? false : true,
+        SavedPost: isAlreadySaved === "true" ? false : true,
       },
       { status: 200 }
     );
@@ -67,7 +55,8 @@ export async function GET(req: NextRequest) {
         },
       },
     });
-    if (user) {
+    // console.log("Get Saved Posts", user);
+    if (user?.savedPosts?.length! > 0) {
       return NextResponse.json({ SavedPost: true }, { status: 200 });
     } else {
       return NextResponse.json({ SavedPost: false }, { status: 200 });

@@ -6,7 +6,6 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -21,7 +20,7 @@ import {
   WhatsappShareButton,
 } from "./ShareButtons.tsx/ShareButtons";
 
-export async function PostShare({ postid }: { postid: number }) {
+export default function PostShare({ postid }: { postid: number }) {
   return (
     <>
       <DropdownMenu>

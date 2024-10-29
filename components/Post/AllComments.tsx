@@ -13,7 +13,6 @@ import { isCommentPosted } from "@/states/atom";
 
 export default function AllComments({ postid }: { postid: string }) {
   const AllCommentsState = useRecoilValue(isCommentPosted);
-
   const [comments, setComments] = useState([]);
 
   useEffect(() => {
@@ -21,14 +20,14 @@ export default function AllComments({ postid }: { postid: string }) {
       const res = await fetch(`/api/posts/comments?postId=${postid}`, {
         method: "GET",
       });
-      const { comments } = await res.json();
-      if (comments.length !== 0) {
-        setComments(comments);
-      } else {
-        toast.error("Error getting all comments!!", {
+
+      const { comments, message } = await res.json();
+      if (!res.ok) {
+        toast.error(`${message}`, {
           closeButton: true,
         });
       }
+      setComments(comments);
     }
     fetchallcomments();
   }, [AllCommentsState, postid]);
@@ -38,20 +37,20 @@ export default function AllComments({ postid }: { postid: string }) {
       <>
         <div className="h-0.5 bg-white w-full rounded-sm my-3" />
         <div className="text-[rgba(255,255,255,0.5)] flex justify-center items-center w-full">
-          No Commments yet
+          Waiting for the Comments...
         </div>
       </>
     );
   }
   return (
     <div className="w-full overflow-hidden">
-      <div className="h-0.5 bg-white w-full rounded-sm my-3" />
+      <div className="h-0.5 bg-white w-full rounded-md my-3" />
       <ul>
         {comments.map((comment: any) => {
           return (
             <li
               className="flex flex-wrap relative bg-[rgba(0,0,0,0.3)] p-2 rounded-sm my-3"
-              key={comment.id}
+              key={comment.id as string}
             >
               <div className="w-9 h-9 border-gray-100 border-2 rounded-full mr-2 flex justify-center overflow-hidden">
                 <Image

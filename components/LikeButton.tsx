@@ -1,24 +1,26 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
 import { IconHeart } from "@tabler/icons-react";
-import { redirect } from "next/navigation";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { isLiking } from "@/states/atom";
 
-export default function LikeButton({ postId }: { postId: number }) {
+export default function LikeButton({
+  userId,
+  postId,
+}: {
+  userId: string;
+  postId: number;
+}) {
   const AllLikeState = useRecoilValue(isLiking);
   const setLikedAtom = useSetRecoilState(isLiking);
-  const { data: session } = useSession();
   const [liked, setLiked] = useState(false);
   const [loading, setLoading] = useState(false);
   const [numLikes, setNumLikes] = useState<number>(0);
 
   useEffect(() => {
     async function checkIfLiked() {
-      if (!session?.user?.id) return;
-      const userId = parseInt(session.user.id);
+      if (!userId) return;
       try {
         const res = await fetch(
           `/api/posts/like?userId=${userId}&postId=${postId}`,
@@ -48,10 +50,6 @@ export default function LikeButton({ postId }: { postId: number }) {
   }, [postId, AllLikeState]);
 
   const handleLike = async () => {
-    if (!session) {
-      alert("You must be logged in to like posts.");
-      redirect("/");
-    }
     setLoading(true);
     setLiked((prev) => !prev);
 

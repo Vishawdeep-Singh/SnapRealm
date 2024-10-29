@@ -9,6 +9,6 @@
   width="24"
   height="24"
 >
-  <path d="M12 14c4.418 0 8 1.343 8 3v2H4v-2c0-1.657 3.582-3 8-3z" />
-  <circle cx="12" cy="7" r="4" />
+  <path d="M12 14c4.418 0 8 1.343 8 3v2H4v-2c0-1.657 3.582-3 8-3z" stroke="skyblue"/>
+  <circle cx="12" cy="7" r="4" stroke="skyblue" />
 </svg>

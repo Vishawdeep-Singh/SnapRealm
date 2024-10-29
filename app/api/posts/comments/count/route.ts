@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    console.log("Number of post", num);
+    // console.log("Number of post", num);
 
     if (num || num === 0) {
       return NextResponse.json({ num: num }, { status: 200 });

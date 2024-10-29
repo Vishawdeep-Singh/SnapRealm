@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import React from "react";
 import { ImagesSlider } from "./ui/images-slider";
 
-export function PostImages({ images }: { images: string[] }) {
+export default function PostImages({ images }: { images: string[] }) {
   return (
     <ImagesSlider className="h-[35rem] w-full" images={images}>
       <motion.div

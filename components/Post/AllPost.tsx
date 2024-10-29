@@ -1,23 +1,29 @@
 import { db } from "@/lib/db";
-import { PostImages } from "../PostImages";
+import PostImages from "../PostImages";
 import { Loader } from "rsuite";
-import { IconBookmark } from "@tabler/icons-react";
 import { PostDropDown } from "./PostDropDown";
 import Link from "next/link";
+import Image from "next/image";
 import LikeButton from "../LikeButton";
 import CommentButton from "../CommentButton";
-import { PostShare } from "./PostShare";
+import PostShare from "./PostShare";
+import SaveButton from "./SaveButton";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/options";
+import FollowButton from "../User/FollowButton";
 
 export default async function AllPost() {
+  const session = await getServerSession(authOptions);
+
   const allPosts = await db.post.findMany({
     include: {
       author: {
         select: {
           id: true,
           username: true,
+          image: true,
         },
       },
-      likedby: true,
     },
   });
 
@@ -33,16 +39,43 @@ export default async function AllPost() {
         return (
           <div
             key={post.id}
-            className="w-full h-full flex flex-col min-w-[360px] max-w-[960px]"
+            className="w-full h-full flex justify-center flex-col min-w-[360px] max-w-[960px]"
           >
             <main className="flex-grow w-[80%] m-auto">
-              <div className="flex flex-col gap-4 p-4 relative">
+              <div className="flex flex-col space-y-1 p-4 relative">
+                <div className="text-xs rounded-md w-full px-1 flex justify-between text-gray-400 z-10 items-center">
+                  <Link
+                    className="flex justify-start items-center w-[200px]"
+                    href={`/${post.author.username}`}
+                  >
+                    <div className="w-10 h-10 rounded-full mr-2 flex justify-center overflow-hidden">
+                      <Image
+                        src={
+                          post.author.image !== null
+                            ? post.author.image
+                            : "/defaultuser.svg"
+                        }
+                        alt="user image"
+                        width={40}
+                        height={20}
+                      />
+                    </div>
+                    {post.author.username}
+                    <div className="ml-2">
+                      <FollowButton userId={post.authorId} />
+                    </div>
+                  </Link>
+                  <PostDropDown postid={post.id} author={post.author.id} />
+                </div>
                 <div className="w-full rounded-md overflow-hidden">
                   <PostImages images={post.media} />
                 </div>
                 <div className="flex items-center gap-2">
                   <div>
-                    <LikeButton postId={post.id} />
+                    <LikeButton
+                      userId={session?.user?.id as string}
+                      postId={post.id}
+                    />
                   </div>
                   <div>
                     <CommentButton postid={post.id} />
@@ -50,9 +83,10 @@ export default async function AllPost() {
                   <button className="focus:outline-none">
                     <PostShare postid={post.id} />
                   </button>
-                  <button className="focus:outline-none ml-auto">
-                    <IconBookmark />
-                  </button>
+                  <SaveButton
+                    userId={session?.user?.id as string}
+                    postId={post.id}
+                  />
                 </div>
                 <p className="text-sm text-gray-500">
                   <em>
@@ -61,16 +95,10 @@ export default async function AllPost() {
                   </em>
                 </p>
                 <div className="flex items-center gap-2">
-                  <strong className="font-medium text-gray-600">user</strong>
-                  <p className="text-sm text-gray-500">Great post!</p>
-                </div>
-                <div className="text-xs absolute top-[-25] w-full pl-5 pr-9 flex justify-between text-gray-400 z-10">
-                  <h1 className="flex justify-center items-center h-9">
-                    <Link href={`/${post.author.username}`}>
-                      {post.author.username}
-                    </Link>
-                  </h1>
-                  <PostDropDown author={post.author.id} />
+                  <strong className="font-medium text-gray-600">
+                    {post.author.username}
+                  </strong>
+                  <p className="text-sm text-gray-500">{post.description}</p>
                 </div>
               </div>
             </main>
