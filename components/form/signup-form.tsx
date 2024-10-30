@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { cn } from "@/lib/utils";
@@ -33,10 +33,13 @@ export default function SignupForm() {
   } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const onSubmit = async (data: FormData) => {
+    setIsSubmitting(true);
     const salt = Math.floor(Math.random() * 1000 + 1);
     const user = {
+      name: data.firstname + " " + data.lastname,
       username: data.firstname + data.lastname + salt,
       email: data.email,
       password: data.password,
@@ -57,12 +60,14 @@ export default function SignupForm() {
         redirect: false,
         callbackUrl: "/",
       });
-      console.log(response);
+      // console.log(response);
+      setIsSubmitting(false);
       router.push("/");
     } else {
       toast.error("Registration failed!", {
         closeButton: true,
       });
+      setIsSubmitting(false);
       // console.log("Registration failed");
     }
   };
@@ -140,7 +145,8 @@ export default function SignupForm() {
           className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
           type="submit"
         >
-          Sign up &rarr;
+          {isSubmitting ? "Creating user..." : `Sign up →`}
+
           <BottomGradient />
         </button>
 

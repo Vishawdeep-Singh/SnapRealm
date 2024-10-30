@@ -16,6 +16,7 @@ import AllComments from "@/components/Post/AllComments";
 import CommentButton from "@/components/CommentButton";
 import PostShare from "@/components/Post/PostShare";
 import SaveButton from "@/components/Post/SaveButton";
+import FollowButton from "@/components/User/FollowButton";
 
 export default async function PostDetailsPage({
   params,
@@ -72,10 +73,39 @@ export default async function PostDetailsPage({
 
   if (post.data) {
     return (
-      <div className="w-full overflow-auto h-screen mt-2 flex flex-col space-y-7">
+      <div className="w-full overflow-auto h-screen mt-2 flex flex-col space-y-3">
         <div className="m-auto w-full flex flex-col min-w-[400px] max-w-[960px]">
           <main className="flex-grow w-[80%] m-auto">
             <div className="flex flex-col gap-4 p-4 relative">
+              <div className="text-xs rounded-md w-full px-1 flex justify-between text-gray-400 z-10 items-center">
+                <Link
+                  className="flex justify-start items-center w-[250px]"
+                  href={`/${post.data?.author.username}`}
+                >
+                  <div className="w-10 h-10 rounded-full mr-2 flex justify-center overflow-hidden">
+                    <Image
+                      src={
+                        post.data.author.image !== null
+                          ? post.data.author.image
+                          : `https://api.multiavatar.com/${post.data.author
+                              .name!}.svg` || "/defaultuser.svg"
+                      }
+                      alt="user image"
+                      width={40}
+                      height={20}
+                    />
+                  </div>
+                  <p className="w-fit">{post.data.author.username}</p>
+                  <div className="ml-2">
+                    <FollowButton userId={post.data.authorId} />
+                  </div>
+                </Link>
+                <PostDropDown
+                  authorName={post.data.author.username!}
+                  postid={post.data.id}
+                  authorid={post.data.author.id}
+                />
+              </div>
               <div className="w-full rounded-md overflow-hidden">
                 <PostImages images={post.data?.media} />
               </div>
@@ -118,27 +148,6 @@ export default async function PostDetailsPage({
                   userid={session.user.id as string}
                 />
                 <AllComments postid={postid} />
-              </div>
-              <div className="text-xs absolute top-[-25] rounded-md w-[96%] px-1 flex justify-between text-gray-400 z-10 items-center bg-[linear-gradient(to_bottom,rgba(0,0,0,0.7),transparent)]">
-                <Link
-                  className="flex justify-start items-center w-[200px]"
-                  href={`/${post.data.author.username}`}
-                >
-                  <div className="w-11 h-11 rounded-full mr-2 flex justify-center overflow-hidden">
-                    <Image
-                      src={
-                        post.data.author.image !== null
-                          ? post.data.author.image
-                          : "/defaultuser.svg"
-                      }
-                      alt="user image"
-                      height={20}
-                      width={35}
-                    />
-                  </div>
-                  {post.data.author.username}
-                </Link>
-                <PostDropDown author={post.data.author.id} />
               </div>
             </div>
           </main>

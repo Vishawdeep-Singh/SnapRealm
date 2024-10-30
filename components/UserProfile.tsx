@@ -1,36 +1,68 @@
 "use client";
 
+import { IconSettings } from "@tabler/icons-react";
 import Image from "next/image";
 import React from "react";
-import { CardBody, CardContainer, CardItem } from "./ui/3d-card";
 
-export default function UserProfile({ name }: { name: string }) {
+export default function UserProfile({
+  name,
+  username,
+  image,
+  numPosts,
+  followers,
+  following,
+  bio,
+}: {
+  bio: string;
+  following: number;
+  followers: number;
+  numPosts: number;
+  username: string;
+  name: string;
+  image: string;
+}) {
   return (
-    <CardContainer className="inter-var">
-      <CardBody className="bg-gray-50 relative group/card  dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-auto sm:w-[30rem] h-auto rounded-xl p-6 border  ">
-        <CardItem translateZ="100" className="w-full mt-4">
-          <Image
-            src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2560&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            height="1000"
-            width="1000"
-            className="h-60 w-full object-cover rounded-xl group-hover/card:shadow-xl"
-            alt="thumbnail"
-          />
-        </CardItem>
-        <CardItem
-          translateZ="50"
-          className="text-xl font-bold text-neutral-600 dark:text-white"
-        >
-          {name}
-        </CardItem>
-        <CardItem
-          as="p"
-          translateZ="60"
-          className="text-neutral-500 text-sm max-w-sm mt-2 dark:text-neutral-300"
-        >
-          Hover over this card to unleash the power of CSS perspective
-        </CardItem>
-      </CardBody>
-    </CardContainer>
+    <div className="flex justify-evenly mt-3 w-[70%]">
+      <div className="w-[30%] flex items-center mt-8">
+        <Image
+          src={
+            image !== null
+              ? image
+              : `https://api.multiavatar.com/${name!}.svg` || "/defaultuser.svg"
+          }
+          height={160}
+          width={160}
+          className="object-cover rounded-xl group-hover/card:shadow-xl"
+          alt="thumbnail"
+        />
+      </div>
+      <div className="mt-8 flex flex-col space-y-5 justify-start width-[70%]">
+        <div className="flex space-x-5 items-center">
+          <p className="text-lg">{username}</p>
+          <button className="px-4 py-2 h-fit rounded-md bg-gray-400 text-black text-sm">
+            Edit Profile
+          </button>
+          <IconSettings />
+        </div>
+        <div className="flex justify-between">
+          <p>
+            <span className="font-bold">{numPosts}</span> Posts
+          </p>
+          <p>
+            <span className="font-bold">{followers}</span> Followers
+          </p>
+          <p>
+            <span className="font-bold">{following}</span> Following
+          </p>
+        </div>
+        <div>
+          <p className="font-bold tracking-wide">{name}</p>
+          <p className="text-[rgba(255,255,255,0.7)] text-sm">Member</p>
+        </div>
+        <div>
+          <p>{bio}</p>
+        </div>
+      </div>
+    </div>
   );
 }

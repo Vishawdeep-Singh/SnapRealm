@@ -77,7 +77,8 @@ export const authOptions: NextAuthOptions = {
       } else if (user) {
         token.id = user.id as string;
         token.provider = user.provider as string;
-        token.name = user.username as string;
+        token.name = user.name;
+        token.username = user.username as string;
         token.email = user.email as string;
         // console.log("Token", token);
         return token;
@@ -101,7 +102,8 @@ export const authOptions: NextAuthOptions = {
       } else {
         session.user = {
           id: token.sub as string,
-          username: token.name as string,
+          name: token.name,
+          username: token.username as string,
           email: token.email as string,
           provider: token.provider as string,
         };
@@ -109,6 +111,8 @@ export const authOptions: NextAuthOptions = {
       }
     },
     async signIn({ user, account, profile, email, credentials }) {
+      console.log("Profile", profile);
+
       const existingUser = await db.user.findUnique({
         where: {
           email: user.email,
@@ -125,6 +129,7 @@ export const authOptions: NextAuthOptions = {
       try {
         const newUser = await db.user.create({
           data: {
+            name: profile?.name as string,
             username: profile?.name as string,
             email: profile?.email as string,
             image: profile?.picture as string,

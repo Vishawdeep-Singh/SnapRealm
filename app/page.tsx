@@ -15,7 +15,7 @@ export default async function HomePage() {
   }
 
   return (
-    <div className="text-white w-full dark overflow-y-auto flex flex-wrap space-y-7">
+    <div className="text-white w-full bg-black overflow-y-auto flex flex-wrap space-y-7">
       <Suspense fallback={<Dashboard />}>
         <div className="w-full">
           <Stories stories={[]} />

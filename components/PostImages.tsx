@@ -5,7 +5,7 @@ import { ImagesSlider } from "./ui/images-slider";
 
 export default function PostImages({ images }: { images: string[] }) {
   return (
-    <ImagesSlider className="h-[35rem] w-full" images={images}>
+    <ImagesSlider className="h-[30rem] w-full" images={images}>
       <motion.div
         initial={{
           opacity: 0,

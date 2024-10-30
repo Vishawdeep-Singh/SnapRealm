@@ -20,6 +20,7 @@ export default async function AllPost() {
       author: {
         select: {
           id: true,
+          name: true,
           username: true,
           image: true,
         },
@@ -35,7 +36,7 @@ export default async function AllPost() {
 
   return (
     <div className="w-full h-screen mt-2 flex flex-col space-y-7">
-      {allPosts.map((post) => {
+      {allPosts.map(async (post) => {
         return (
           <div
             key={post.id}
@@ -45,7 +46,7 @@ export default async function AllPost() {
               <div className="flex flex-col space-y-1 p-4 relative">
                 <div className="text-xs rounded-md w-full px-1 flex justify-between text-gray-400 z-10 items-center">
                   <Link
-                    className="flex justify-start items-center w-[200px]"
+                    className="flex justify-start items-center w-[250px]"
                     href={`/${post.author.username}`}
                   >
                     <div className="w-10 h-10 rounded-full mr-2 flex justify-center overflow-hidden">
@@ -53,19 +54,24 @@ export default async function AllPost() {
                         src={
                           post.author.image !== null
                             ? post.author.image
-                            : "/defaultuser.svg"
+                            : `https://api.multiavatar.com/${post.author
+                                .name!}.svg` || "/defaultuser.svg"
                         }
                         alt="user image"
                         width={40}
                         height={20}
                       />
                     </div>
-                    {post.author.username}
+                    <p className="w-fit">{post.author.username}</p>
                     <div className="ml-2">
                       <FollowButton userId={post.authorId} />
                     </div>
                   </Link>
-                  <PostDropDown postid={post.id} author={post.author.id} />
+                  <PostDropDown
+                    authorName={post.author.username!}
+                    postid={post.id}
+                    authorid={post.author.id}
+                  />
                 </div>
                 <div className="w-full rounded-md overflow-hidden">
                   <PostImages images={post.media} />

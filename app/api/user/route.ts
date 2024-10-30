@@ -5,6 +5,7 @@ import * as z from "zod";
 
 //schema for validation
 const userSchema = z.object({
+  name: z.string(),
   username: z.string().min(3, { message: "Username is too short" }),
   email: z.string().email({ message: "Invalid email address" }),
   password: z
@@ -15,7 +16,7 @@ const userSchema = z.object({
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { email, username, password } = userSchema.parse(body);
+    const { name, email, username, password } = userSchema.parse(body);
 
     //for email
     const existingUserEmail = await db.user.findUnique({
@@ -47,6 +48,7 @@ export async function POST(req: Request) {
     const newUser = await db.user.create({
       data: {
         provider: "credentials",
+        name,
         username,
         email,
         password: hashedPassword,

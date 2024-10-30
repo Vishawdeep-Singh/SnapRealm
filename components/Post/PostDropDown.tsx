@@ -18,13 +18,16 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import { CopyButton } from "./ShareButtons.tsx/ShareButtons";
 import Link from "next/link";
+import PostDeleteButton from "./PostDeleteButton";
 
 export async function PostDropDown({
   postid,
-  author,
+  authorid,
+  authorName,
 }: {
+  authorName: string;
   postid: number;
-  author: number;
+  authorid: number;
 }) {
   const session = await getServerSession(authOptions);
 
@@ -40,11 +43,10 @@ export async function PostDropDown({
           <DropdownMenuLabel>Post Options</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
-            {(session?.user?.id as unknown as number) == author ? (
+            {(session?.user?.id as unknown as number) == authorid ? (
               <>
-                <DropdownMenuItem>
-                  <Trash className="text-red-500" />
-                  <span className="text-red-500">Delete</span>
+                <DropdownMenuItem className="cursor-pointer">
+                  <PostDeleteButton postid={postid} />
                   {/* <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut> */}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
@@ -57,10 +59,10 @@ export async function PostDropDown({
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <Link
-              className="flex items-center space-x-2"
+              className="flex items-center space-x-2 w-full cursor-pointer"
               href={`/post/${postid}`}
             >
-              <DropdownMenuItem>
+              <DropdownMenuItem className="w-full cursor-pointer">
                 <ArrowRight size={18} />
                 <span>Goto Post</span>
               </DropdownMenuItem>
@@ -75,9 +77,11 @@ export async function PostDropDown({
               </CopyButton>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <span>About this account</span>
-            </DropdownMenuItem>
+            <Link className="cursor-pointer" href={`/${authorName}`}>
+              <DropdownMenuItem className="cursor-pointer">
+                <span>About this account</span>
+              </DropdownMenuItem>
+            </Link>
           </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>
