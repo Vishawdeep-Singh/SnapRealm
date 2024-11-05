@@ -5,6 +5,7 @@ import { toast } from "sonner";
 
 import Link from "next/link";
 import Image from "next/image";
+import { IconX } from "@tabler/icons-react";
 
 type usertype = {
   name: string;
@@ -13,7 +14,13 @@ type usertype = {
   bio: string;
 };
 
-export default function SearchDialog() {
+export default function SearchDialog({
+  status,
+  changeStatus,
+}: {
+  status: boolean;
+  changeStatus: () => void;
+}) {
   const [allUsers, setAllUsers] = useState<usertype[]>();
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filtered, setFiltered] = useState<usertype[] | null>();
@@ -42,11 +49,15 @@ export default function SearchDialog() {
   }
 
   return (
-    <dialog open>
-      <div className="fixed top-0 left-0 w-[20%] h-screen bg-[rbga(0,0,0,0.8)] ">
+    <dialog open={status} onClose={changeStatus}>
+      <div className="fixed top-0 left-0 w-[20%] h-screen bg-[rgba(0,0,0,0.9)] z-30 p-5 rounded-sm text-white">
+        <button className="absolute top-2 right-2" onClick={changeStatus}>
+          <IconX />
+        </button>
         <input
           type="text"
-          className="border border-white outline-none rounded-full w-full p-2 m-2"
+          className="border outline-none rounded-full w-full p-2 mb-2 bg-transparent"
+          placeholder="search your partner.."
           value={searchTerm}
           onChange={handleChange}
         />

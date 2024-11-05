@@ -75,54 +75,54 @@ export default function Stories() {
         <AddStories postStory={addingStory} setPostStory={AddingStories} />
       </div>
     );
-  }
-
-  return (
-    <div className="flex items-center mt-4 justify-start w-[80%] m-auto">
-      <AllStories
-        stories={stories}
-        isOpen={showStory}
-        CloseStory={handleStoryClick}
-      />
-      <div
-        id="content"
-        className="flex space-x-4 h-20 overflow-x-auto whitespace-nowrap pt-2"
-      >
-        <div className="h-16 w-16 border-2 border-red-500 rounded-full cursor-pointer relative">
-          <Image
-            src={
-              session.data?.user?.image
-                ? session.data?.user.image
-                : `https://api.multiavatar.com/${session.data?.user?.name}.svg` ||
-                  "./defaultuser.svg"
-            }
-            alt="user image"
-            height={15}
-            width={15}
-            className="h-full w-full object-cover object-center rounded-full"
-            onClick={showingUserStory}
-          />
-          <IconPlus
-            size={15}
-            onClick={AddingStories}
-            className="absolute bottom-0 right-0 bg-blue-400 rounded-full"
-          />
-        </div>
-        <AddStories postStory={addingStory} setPostStory={AddingStories} />
-        {stories.map((item, index) => (
-          <div
-            key={index}
-            className="h-16 w-16 border-2 border-red-500 rounded-full overflow-hidden cursor-pointer"
-            onClick={handleStoryClick}
-          >
-            <img
-              src={item.user.image}
-              alt={`story-${index}`}
+  } else {
+    return (
+      <div className="flex items-center mt-4 justify-start w-[80%] m-auto">
+        <AllStories
+          stories={stories}
+          isOpen={showStory}
+          CloseStory={handleStoryClick}
+        />
+        <div
+          id="content"
+          className="flex space-x-4 h-20 overflow-x-auto whitespace-nowrap pt-2"
+        >
+          <div className="h-16 w-16 border-2 border-red-500 rounded-full cursor-pointer relative">
+            <Image
+              src={
+                session.data?.user?.image
+                  ? session.data?.user.image
+                  : `https://api.multiavatar.com/${session.data?.user?.name}.svg` ||
+                    "./defaultuser.svg"
+              }
+              alt="user image"
+              height={15}
+              width={15}
               className="h-full w-full object-cover object-center rounded-full"
+              onClick={showingUserStory}
+            />
+            <IconPlus
+              size={15}
+              onClick={AddingStories}
+              className="absolute bottom-0 right-0 bg-blue-400 rounded-full"
             />
           </div>
-        ))}
+          <AddStories postStory={addingStory} setPostStory={AddingStories} />
+          {stories.map((item, index) => (
+            <div
+              key={index}
+              className="h-16 w-16 border-2 border-red-500 rounded-full overflow-hidden cursor-pointer"
+              onClick={handleStoryClick}
+            >
+              <img
+                src={item.user.image}
+                alt={`story-${index}`}
+                className="h-full w-full object-cover object-center rounded-full"
+              />
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
 }
