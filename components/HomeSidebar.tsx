@@ -1,5 +1,5 @@
 "use client";
-import React, { Suspense, useState } from "react";
+import React, { useState } from "react";
 import { Sidebar, SidebarBody, SidebarLink } from "./ui/sidebar";
 import {
   IconArrowLeft,
@@ -16,9 +16,14 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { signOut, useSession } from "next-auth/react";
+import { useRecoilState } from "recoil";
+import { isSearching } from "@/states/atom";
+import SearchDialog from "./Search/SearchDialog";
 
 export function HomeSidebar({ children }: { children: React.ReactNode }) {
   const { data: session } = useSession();
+
+  const [searchStatus, setSearchStatus] = useRecoilState(isSearching);
 
   const links = [
     {
@@ -34,6 +39,7 @@ export function HomeSidebar({ children }: { children: React.ReactNode }) {
       icon: (
         <IconSearch className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
+      onClick: handleSearchSatus,
     },
     {
       label: "Explore",
@@ -74,6 +80,12 @@ export function HomeSidebar({ children }: { children: React.ReactNode }) {
       },
     },
   ];
+
+  function handleSearchSatus() {
+    console.log(searchStatus);
+    setSearchStatus((prev) => !prev);
+  }
+
   const [open, setOpen] = useState(false);
   return (
     <div
@@ -82,6 +94,7 @@ export function HomeSidebar({ children }: { children: React.ReactNode }) {
         "h-screen"
       )}
     >
+      <SearchDialog status={searchStatus} changeStatus={handleSearchSatus} />
       <Sidebar open={open} setOpen={setOpen}>
         <SidebarBody className="justify-between gap-10">
           <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
