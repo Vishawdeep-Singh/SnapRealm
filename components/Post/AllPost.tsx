@@ -25,6 +25,9 @@ export default async function AllPost() {
           image: true,
         },
       },
+      likedby:true,
+      comments:true
+      
     },
   });
 
