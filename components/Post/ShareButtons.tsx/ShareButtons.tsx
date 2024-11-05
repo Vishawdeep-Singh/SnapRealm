@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { toast } from "sonner";
 
 export function CopyButton({
   children,
@@ -14,6 +15,7 @@ export function CopyButton({
         await navigator.clipboard.writeText(
           `http://localhost:3000/post/${postid}`
         );
+        toast.success("Link Copied", { closeButton: true });
       }}
     >
       {children}

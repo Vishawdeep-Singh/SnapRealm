@@ -5,11 +5,13 @@ import { toast } from "sonner";
 
 export default function FollowButton({ userId }: { userId: number }) {
   const [followStatus, setFollowStatus] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // console.log("This is a follow button");
 
   useEffect(() => {
     async function getFollowState() {
+      setIsLoading(true);
       const res = await fetch(`/api/user/follow?targetId=${userId}`, {
         method: "GET",
       });
@@ -20,6 +22,7 @@ export default function FollowButton({ userId }: { userId: number }) {
       }
       const { followStatus } = await res.json();
       setFollowStatus(followStatus);
+      setIsLoading(false);
     }
     getFollowState();
   }, []);
@@ -40,6 +43,17 @@ export default function FollowButton({ userId }: { userId: number }) {
       setFollowStatus((prev) => !prev); //db actual status
       return;
     }
+  }
+
+  if (isLoading) {
+    return (
+      <button
+        className="bg-transparent rounded-full outline-none px-2 "
+        disabled
+      >
+        Loading....
+      </button>
+    );
   }
 
   return (

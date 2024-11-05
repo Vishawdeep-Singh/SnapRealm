@@ -1,5 +1,5 @@
-import { Loader } from "rsuite";
+import CustomLoader from "@/components/CustomLoader";
 
 export default function PageLoader() {
-  return <Loader size="lg" content="Large" />;
+  return <CustomLoader />;
 }

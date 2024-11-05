@@ -2,7 +2,6 @@ import {
   AlertTriangle,
   ArrowRight,
   Copy,
-  Trash,
   MoreHorizontal,
 } from "lucide-react";
 import {
@@ -47,6 +46,7 @@ export async function PostDropDown({
               <>
                 <DropdownMenuItem className="cursor-pointer">
                   <PostDeleteButton postid={postid} />
+
                   {/* <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut> */}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />

@@ -2,7 +2,6 @@
 
 import { IconBookmark, IconGrid4x4 } from "@tabler/icons-react";
 import { useSession } from "next-auth/react";
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 export default function UserMemories({
@@ -47,15 +46,14 @@ export default function UserMemories({
 
 function WantToSee({ value }: { value: { id: number; media: string[] }[] }) {
   return (
-    <div className="grid grid-cols-3 w-full justify-items-center gapx-x-3 gap-y-4">
+    <div className="grid grid-cols-[repeat(auto-fit,_minmax(320px,_1fr))] w-full justify-items-center gap-x-3 gap-y-4">
       {value.map((post, i) => {
         return (
-          <Link
-            key={i}
-            href={`/post/${post.id}`}
-            className={`w-[300px] h-[250px] relative`}
-          >
-            <Image src={post.media[0]} alt={`Post ${i}`} fill />
+          <Link className="w-full" key={i} href={`/post/${post.id}`}>
+            <div
+              className={"h-[250px] bg-cover bg-center"}
+              style={{ backgroundImage: `url(${post.media[0]})` }}
+            />
           </Link>
         );
       })}

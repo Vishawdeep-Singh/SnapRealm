@@ -35,7 +35,7 @@ export default async function AllPost() {
   //   console.log(allPosts);
 
   return (
-    <div className="w-full h-screen mt-2 flex flex-col space-y-7">
+    <div className="w-full h-screen flex flex-col space-y-7">
       {allPosts.map(async (post) => {
         return (
           <div
@@ -44,7 +44,7 @@ export default async function AllPost() {
           >
             <main className="flex-grow w-[80%] m-auto">
               <div className="flex flex-col space-y-1 p-4 relative">
-                <div className="text-xs rounded-md w-full px-1 flex justify-between text-gray-400 z-10 items-center">
+                <div className="text-xs rounded-md w-full px-1 flex justify-between text-gray-400  items-center">
                   <Link
                     className="flex justify-start items-center w-[250px]"
                     href={`/${post.author.username}`}
@@ -104,7 +104,7 @@ export default async function AllPost() {
                   <strong className="font-medium text-gray-600">
                     {post.author.username}
                   </strong>
-                  <p className="text-sm text-gray-500">{post.description}</p>
+                  <p className="text-sm text-white">{post.description}</p>
                 </div>
               </div>
             </main>

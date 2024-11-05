@@ -41,10 +41,12 @@ export default function LikeButton({
   }, []);
 
   useEffect(() => {
+    setLoading(true);
     async function GetCount() {
       const res = await fetch(`/api/posts/like/count?postId=${postId}`);
       const { numberOfLikes } = await res.json();
       setNumLikes(numberOfLikes);
+      setLoading(false);
     }
     GetCount();
   }, [postId, AllLikeState]);
@@ -85,7 +87,7 @@ export default function LikeButton({
           fill={liked ? "red" : "none"}
         />
       </button>
-      <p className="text-center">{numLikes}</p>
+      <p className="text-center">{loading ? "..." : numLikes}</p>
     </>
   );
 }

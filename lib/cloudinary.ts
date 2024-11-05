@@ -35,3 +35,27 @@ export async function uploadImages(media: File[]) {
 
   return Promise.all(uploadPromises);
 }
+
+export async function deleteImages(media: string[]) {
+  // Convert `cloudinary.uploader.destroy` to return a Promise
+  const deleteImage = (id: string): Promise<void> =>
+    new Promise((resolve, reject) => {
+      cloudinary.uploader.destroy(id, (error: any, result: any) => {
+        if (error) {
+          console.error(`Error deleting image with id ${id}:`, error);
+          reject(error);
+        } else {
+          console.log(`Image with id ${id} deleted successfully:`, result);
+          resolve();
+        } 
+      });
+    });
+
+  // Use Promise.all to handle deletions in parallel
+  try {
+    await Promise.all(media.map((id) => deleteImage(id)));
+    console.log("All images deleted successfully");
+  } catch (error) {
+    console.error("Error deleting one or more images:", error);
+  }
+}

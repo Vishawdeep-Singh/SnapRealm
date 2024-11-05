@@ -1,4 +1,6 @@
+import { deleteImages } from "@/lib/cloudinary";
 import { db } from "@/lib/db";
+import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -18,7 +20,11 @@ export async function GET(req: NextRequest) {
       },
     });
 
+    const res = await deleteImages(deletePost.media);
+    console.log(res);
+
     if (deletePost) {
+      revalidatePath("/");
       return NextResponse.json(
         { message: "Post Deleted Successfully" },
         { status: 200 }

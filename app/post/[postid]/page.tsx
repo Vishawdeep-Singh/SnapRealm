@@ -77,7 +77,7 @@ export default async function PostDetailsPage({
         <div className="m-auto w-full flex flex-col min-w-[400px] max-w-[960px]">
           <main className="flex-grow w-[80%] m-auto">
             <div className="flex flex-col gap-4 p-4 relative">
-              <div className="text-xs rounded-md w-full px-1 flex justify-between text-gray-400 z-10 items-center">
+              <div className="text-xs rounded-md w-full px-1 flex justify-between text-gray-400 items-center">
                 <Link
                   className="flex justify-start items-center w-[250px]"
                   href={`/${post.data?.author.username}`}
